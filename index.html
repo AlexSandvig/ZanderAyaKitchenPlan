@@ -10,19 +10,19 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen pb-12">
+<body class="bg-slate-100 text-slate-800 min-h-screen pb-12">
 
     <!-- Header -->
-    <header class="bg-indigo-600 text-white shadow-md">
-        <div class="max-w-3xl mx-auto px-4 py-4 flex justify-between items-center">
+    <header class="bg-gradient-to-r from-indigo-700 to-indigo-800 text-white shadow-lg">
+        <div class="max-w-3xl mx-auto px-4 py-5 flex justify-between items-center">
             <div>
-                <h1 class="text-xl font-bold flex items-center gap-2">
+                <h1 class="text-xl md:text-2xl font-bold flex items-center gap-2">
                     <span>🍽️</span> Køkkenplan & Lommepenge
                 </h1>
-                <p id="week-display" class="text-indigo-200 text-sm mt-0.5">Uge 45 (Starter 2. nov)</p>
+                <p id="week-display" class="text-indigo-200 text-xs md:text-sm mt-0.5">Ugeplan • Start i næste uge</p>
             </div>
             <div>
-                <button id="mode-toggle-btn" onclick="toggleMode()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-indigo-500 transition shadow-inner">
+                <button id="mode-toggle-btn" onclick="toggleMode()" class="bg-white/10 hover:bg-white/20 text-white px-3.5 py-2 rounded-xl text-xs md:text-sm font-semibold border border-white/20 transition shadow-sm backdrop-blur-sm cursor-pointer">
                     🔒 Skift til Børne-tilstand
                 </button>
             </div>
@@ -32,35 +32,35 @@
     <main class="max-w-3xl mx-auto px-4 mt-6 space-y-6">
 
         <!-- Status Banner -->
-        <div id="status-banner" class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div>
-                <span id="current-mode-badge" class="inline-block px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full mb-1">Forældre / Admin-tilstand</span>
-                <h2 id="banner-title" class="text-lg font-bold text-slate-900">Velkommen, Admin</h2>
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="space-y-1 text-center md:text-left">
+                <span id="current-mode-badge" class="inline-block px-3 py-1 bg-amber-100 text-amber-900 text-xs font-bold rounded-full mb-1">Forældre / Admin-tilstand</span>
+                <h2 id="banner-title" class="text-xl font-bold text-slate-900">Velkommen, Admin</h2>
                 <p id="banner-desc" class="text-slate-500 text-sm">Du kan godkende vagter, tildele dage og administrere lommepenge.</p>
             </div>
-            <div class="flex gap-3 text-center">
-                <div class="bg-slate-50 border border-slate-100 px-4 py-2 rounded-xl">
-                    <span class="block text-xs font-semibold text-slate-400">Zander uge</span>
-                    <span id="zander-weekly-total" class="text-lg font-bold text-indigo-600">250 kr.</span>
+            <div class="flex gap-4 w-full md:w-auto justify-center">
+                <div class="bg-indigo-50/70 border border-indigo-100 px-5 py-3 rounded-2xl text-center flex-1 md:flex-initial">
+                    <span class="block text-xs font-bold text-indigo-400 uppercase tracking-wider">Zander uge</span>
+                    <span id="zander-weekly-total" class="text-xl font-extrabold text-indigo-700">250 kr.</span>
                 </div>
-                <div class="bg-slate-50 border border-slate-100 px-4 py-2 rounded-xl">
-                    <span class="block text-xs font-semibold text-slate-400">Aya uge</span>
-                    <span id="aya-weekly-total" class="text-lg font-bold text-indigo-600">250 kr.</span>
+                <div class="bg-pink-50/70 border border-pink-100 px-5 py-3 rounded-2xl text-center flex-1 md:flex-initial">
+                    <span class="block text-xs font-bold text-pink-400 uppercase tracking-wider">Aya uge</span>
+                    <span id="aya-weekly-total" class="text-xl font-extrabold text-pink-700">250 kr.</span>
                 </div>
             </div>
         </div>
 
-        <!-- Kids Selector (Kun synlig i børne-tilstand for hurtig skift) -->
-        <div id="kid-selector-container" class="hidden flex gap-2">
-            <button onclick="setKidView('Zander')" id="btn-view-zander" class="flex-1 py-2.5 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-sm transition">Zanders Visning</button>
-            <button onclick="setKidView('Aya')" id="btn-view-aya" class="flex-1 py-2.5 rounded-xl font-bold text-sm bg-slate-200 text-slate-700 transition">Ayas Visning</button>
+        <!-- Kids Selector (Kun synlig i børne-tilstand) -->
+        <div id="kid-selector-container" class="hidden flex gap-3">
+            <button onclick="setKidView('Zander')" id="btn-view-zander" class="flex-1 py-3 rounded-2xl font-bold text-sm bg-indigo-600 text-white shadow-md transition cursor-pointer">Zanders Visning</button>
+            <button onclick="setKidView('Aya')" id="btn-view-aya" class="flex-1 py-3 rounded-2xl font-bold text-sm bg-white text-slate-700 border border-slate-200 shadow-sm transition cursor-pointer">Ayas Visning</button>
         </div>
 
         <!-- Ugeplan / Dage -->
-        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+        <section class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                 <h3 class="font-bold text-slate-800 flex items-center gap-2"><span>📅</span> Ugens Køkkenplan</h3>
-                <span class="text-xs text-slate-400">Færdig senest kl. 20.00</span>
+                <span class="text-xs font-semibold text-slate-400 bg-slate-200/60 px-2.5 py-1 rounded-lg">Færdig senest kl. 20.00</span>
             </div>
             
             <div id="days-container" class="divide-y divide-slate-100">
@@ -69,54 +69,55 @@
         </section>
 
         <!-- Regler & Økonomi boks -->
-        <section class="bg-indigo-900 text-indigo-50 rounded-2xl p-6 shadow-sm">
-            <h3 class="font-bold text-white mb-3 flex items-center gap-2"><span>💡</span> Regler & Økonomi (Pr. uge)</h3>
-            <ul class="space-y-2 text-sm text-indigo-100/90">
-                <li class="flex justify-between border-b border-indigo-800 pb-1"><span>Grundbeløb (faste pligter):</span> <span class="font-semibold text-white">70 kr.</span></li>
-                <li class="flex justify-between border-b border-indigo-800 pb-1"><span>Mad & Oprydning pr. vagt (3 gange ugentligt):</span> <span class="font-semibold text-white">60 kr.</span></li>
-                <li class="flex justify-between border-b border-indigo-800 pb-1"><span>Maksimal ugeløn pr. barn:</span> <span class="font-semibold text-white">250 kr. (~1.100 kr./md.)</span></li>
-                <li class="flex justify-between border-b border-indigo-800 pb-1"><span>Droppet vagt uden aftale:</span> <span class="font-semibold text-red-300">-100 kr. (0 kr. vagt + 40 kr. træk)</span></li>
-                <li class="flex justify-between border-b border-indigo-800 pb-1"><span>Halvfærdig oprydning kl. 20:</span> <span class="font-semibold text-amber-300">-30 kr. (Får kun halv løn for dagen)</span></li>
+        <section class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
+            <h3 class="font-bold text-lg flex items-center gap-2"><span>💡</span> Regler & Økonomi (Pr. uge)</h3>
+            <ul class="space-y-2.5 text-sm text-indigo-100/90">
+                <li class="flex justify-between border-b border-indigo-800/60 pb-2"><span>Grundbeløb (faste pligter):</span> <span class="font-bold text-white">70 kr.</span></li>
+                <li class="flex justify-between border-b border-indigo-800/60 pb-2"><span>Mad & Oprydning pr. vagt (3 gange ugentligt):</span> <span class="font-bold text-white">60 kr.</span></li>
+                <li class="flex justify-between border-b border-indigo-800/60 pb-2"><span>Maksimal ugeløn pr. barn:</span> <span class="font-bold text-white">250 kr. (~1.100 kr./md.)</span></li>
+                <li class="flex justify-between border-b border-indigo-800/60 pb-2"><span>Droppet vagt uden aftale:</span> <span class="font-bold text-red-300">-100 kr. (0 kr. vagt + 40 kr. træk)</span></li>
+                <li class="flex justify-between border-b border-indigo-800/60 pb-2"><span>Halvfærdig oprydning kl. 20:</span> <span class="font-bold text-amber-300">-30 kr. (Får kun halv løn for dagen)</span></li>
             </ul>
         </section>
     </main>
 
     <!-- Modal til Bytning af Dag -->
-    <div id="swap-modal" class="fixed inset-0 bg-slate-900/50 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl space-y-4">
-            <h3 class="text-lg font-bold text-slate-900">Byt køkkendag</h3>
-            <p id="swap-modal-text" class="text-sm text-slate-600">Vil du bytte denne dag?</p>
+    <div id="swap-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-xl font-bold mx-auto">🔄</div>
+            <h3 class="text-lg font-bold text-slate-900 text-center">Byt køkkendag</h3>
+            <p id="swap-modal-text" class="text-sm text-slate-600 text-center">Vil du bytte denne dag?</p>
             <div class="flex gap-3 pt-2">
-                <button onclick="closeSwapModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-semibold text-sm">Annuller</button>
-                <button onclick="executeSwap()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-semibold text-sm">Ja, byt dag</button>
+                <button onclick="closeSwapModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-2xl font-semibold text-sm cursor-pointer transition">Annuller</button>
+                <button onclick="executeSwap()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-2xl font-semibold text-sm cursor-pointer transition">Ja, byt dag</button>
             </div>
         </div>
     </div>
 
     <!-- Modal til Admin Ændring af Dag -->
-    <div id="admin-day-modal" class="fixed inset-0 bg-slate-900/50 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl space-y-4">
-            <h3 class="text-lg font-bold text-slate-900">Skift ansvarlig for dag</h3>
-            <p id="admin-modal-day-name" class="text-sm text-indigo-600 font-semibold"></p>
-            <div class="space-y-2">
-                <button onclick="setDayAssignee('Zander')" class="w-full text-left px-4 py-3 bg-slate-50 hover:bg-indigo-50 rounded-xl font-medium text-sm flex justify-between items-center"><span>Zander</span> <span class="text-xs text-slate-400">Tildel</span></button>
-                <button onclick="setDayAssignee('Aya')" class="w-full text-left px-4 py-3 bg-slate-50 hover:bg-indigo-50 rounded-xl font-medium text-sm flex justify-between items-center"><span>Aya</span> <span class="text-xs text-slate-400">Tildel</span></button>
-                <button onclick="setDayAssignee('Fri / Fælles')" class="w-full text-left px-4 py-3 bg-slate-50 hover:bg-amber-50 rounded-xl font-medium text-sm flex justify-between items-center"><span>Fri / Fælles</span> <span class="text-xs text-slate-400">Tildel</span></button>
+    <div id="admin-day-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-xl font-bold mx-auto">⚙️</div>
+            <h3 class="text-lg font-bold text-slate-900 text-center">Skift ansvarlig for dag</h3>
+            <p id="admin-modal-day-name" class="text-xs text-indigo-600 font-bold text-center uppercase tracking-wider"></p>
+            <div class="space-y-2 pt-2">
+                <button onclick="setDayAssignee('Zander')" class="w-full text-left px-4 py-3.5 bg-slate-50 hover:bg-indigo-50 text-slate-800 rounded-2xl font-semibold text-sm flex justify-between items-center transition cursor-pointer"><span>Zander</span> <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-lg">Tildel</span></button>
+                <button onclick="setDayAssignee('Aya')" class="w-full text-left px-4 py-3.5 bg-slate-50 hover:bg-indigo-50 text-slate-800 rounded-2xl font-semibold text-sm flex justify-between items-center transition cursor-pointer"><span>Aya</span> <span class="text-xs bg-pink-100 text-pink-800 px-2 py-0.5 rounded-lg">Tildel</span></button>
+                <button onclick="setDayAssignee('Fri / Fælles')" class="w-full text-left px-4 py-3.5 bg-slate-50 hover:bg-amber-50 text-slate-800 rounded-2xl font-semibold text-sm flex justify-between items-center transition cursor-pointer"><span>Fri / Fælles</span> <span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-lg">Tildel</span></button>
             </div>
-            <button onclick="closeAdminDayModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-semibold text-sm mt-2">Luk</button>
+            <button onclick="closeAdminDayModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-2xl font-semibold text-sm mt-2 cursor-pointer transition">Luk</button>
         </div>
     </div>
 
     <script>
-        // Startdata for næste uge
         const defaultSchedule = [
-            { id: 0, day: 'Mandag', date: '2. nov', assignee: 'Zander', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'pending', penalty: 0 },
-            { id: 1, day: 'Tirsdag', date: '3. nov', assignee: 'Aya', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'pending', penalty: 0 },
-            { id: 2, day: 'Onsdag', date: '4. nov', assignee: 'Zander', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'pending', penalty: 0 },
-            { id: 3, day: 'Torsdag', date: '5. nov', assignee: 'Aya', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'pending', penalty: 0 },
-            { id: 4, day: 'Fredag', date: '6. nov', assignee: 'Zander', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'pending', penalty: 0 },
-            { id: 5, day: 'Lørdag', date: '7. nov', assignee: 'Aya', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'pending', penalty: 0 },
-            { id: 6, day: 'Søndag', date: '8. nov', assignee: 'Fri / Fælles', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'fri', penalty: 0 }
+            { id: 0, day: 'Mandag', date: 'Næste uge', assignee: 'Zander', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'pending', penalty: 0 },
+            { id: 1, day: 'Tirsdag', date: 'Næste uge', assignee: 'Aya', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'pending', penalty: 0 },
+            { id: 2, day: 'Onsdag', date: 'Næste uge', assignee: 'Zander', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'pending', penalty: 0 },
+            { id: 3, day: 'Torsdag', date: 'Næste uge', assignee: 'Aya', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'pending', penalty: 0 },
+            { id: 4, day: 'Fredag', date: 'Næste uge', assignee: 'Zander', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'pending', penalty: 0 },
+            { id: 5, day: 'Lørdag', date: 'Næste uge', assignee: 'Aya', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'pending', penalty: 0 },
+            { id: 6, day: 'Søndag', date: 'Næste uge', assignee: 'Fri / Fælles', checklist: { mad: false, rester: false, borde: false, opvask: false, komfur: false }, status: 'fri', penalty: 0 }
         ];
 
         let state = JSON.parse(localStorage.getItem('koekkenplan_state')) || defaultSchedule;
@@ -126,10 +127,10 @@
         let selectedDayIdForAdmin = null;
 
         const checklistLabels = {
-            mad: 'Madlavning udført',
+            mad: 'Madlavning',
             rester: 'Rester i køleskab',
-            borde: 'Borde ryddet & tørret',
-            opvask: 'Opvasker/håndopvask',
+            borde: 'Borde ryddet/tørret',
+            opvask: 'Opvasker/hånd',
             komfur: 'Komfur tørret af'
         };
 
@@ -148,14 +149,14 @@
 
             if (isAdmin) {
                 btn.textContent = "🔒 Skift til Børne-tilstand";
-                badge.className = "inline-block px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full mb-1";
+                badge.className = "inline-block px-3 py-1 bg-amber-100 text-amber-900 text-xs font-bold rounded-full mb-1";
                 badge.textContent = "Forældre / Admin-tilstand";
                 bannerTitle.textContent = "Velkommen, Admin";
                 bannerDesc.textContent = "Du kan godkende vagter, tildele dage og administrere lommepenge.";
                 kidSelector.classList.add('hidden');
             } else {
                 btn.textContent = "🔑 Skift til Admin-tilstand";
-                badge.className = "inline-block px-2.5 py-1 bg-indigo-100 text-indigo-800 text-xs font-bold rounded-full mb-1";
+                badge.className = "inline-block px-3 py-1 bg-indigo-100 text-indigo-900 text-xs font-bold rounded-full mb-1";
                 badge.textContent = "Børne-tilstand (" + activeKid + ")";
                 bannerTitle.textContent = "Hej " + activeKid + "! 👋";
                 bannerDesc.textContent = "Her er din køkkenplan og tjekliste for ugen.";
@@ -169,8 +170,8 @@
             document.getElementById('current-mode-badge').textContent = "Børne-tilstand (" + activeKid + ")";
             document.getElementById('banner-title').textContent = "Hej " + activeKid + "! 👋";
             
-            document.getElementById('btn-view-zander').className = kid === 'Zander' ? "flex-1 py-2.5 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-sm transition" : "flex-1 py-2.5 rounded-xl font-bold text-sm bg-slate-200 text-slate-700 transition";
-            document.getElementById('btn-view-aya').className = kid === 'Aya' ? "flex-1 py-2.5 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-sm transition" : "flex-1 py-2.5 rounded-xl font-bold text-sm bg-slate-200 text-slate-700 transition";
+            document.getElementById('btn-view-zander').className = kid === 'Zander' ? "flex-1 py-3 rounded-2xl font-bold text-sm bg-indigo-600 text-white shadow-md transition cursor-pointer" : "flex-1 py-3 rounded-2xl font-bold text-sm bg-white text-slate-700 border border-slate-200 shadow-sm transition cursor-pointer";
+            document.getElementById('btn-view-aya').className = kid === 'Aya' ? "flex-1 py-3 rounded-2xl font-bold text-sm bg-indigo-600 text-white shadow-md transition cursor-pointer" : "flex-1 py-3 rounded-2xl font-bold text-sm bg-white text-slate-700 border border-slate-200 shadow-sm transition cursor-pointer";
             render();
         }
 
@@ -191,12 +192,11 @@
             }
         }
 
-        // Admin: Åbn modal til at skifte person på en dag
         function openAdminDayModal(dayId) {
             if (!isAdmin) return;
             selectedDayIdForAdmin = dayId;
             const dayObj = state.find(d => d.id === dayId);
-            document.getElementById('admin-modal-day-name').textContent = dayObj.day + " (" + dayObj.date + ")";
+            document.getElementById('admin-modal-day-name').textContent = dayObj.day + " (Nuværende: " + dayObj.assignee + ")";
             document.getElementById('admin-day-modal').classList.remove('hidden');
         }
 
@@ -221,12 +221,11 @@
             closeAdminDayModal();
         }
 
-        // Børn: Åbn modal til bytning
         function openSwapModal(dayId) {
             selectedDayIdForSwap = dayId;
             const dayObj = state.find(d => d.id === dayId);
             const otherKid = dayObj.assignee === 'Zander' ? 'Aya' : 'Zander';
-            document.getElementById('swap-modal-text').textContent = "Vil du bytte " + dayObj.day + " (" + dayObj.assignee + " -> " + otherKid + ")?";
+            document.getElementById('swap-modal-text').textContent = "Vil du bytte " + dayObj.day + " væk fra " + dayObj.assignee + " til " + otherKid + "?";
             document.getElementById('swap-modal').classList.remove('hidden');
         }
 
@@ -268,27 +267,26 @@
             container.innerHTML = '';
 
             state.forEach(day => {
-                // Hvis vi er i børne-tilstand, kan vi vælge at vise alle eller fokusere. Vis alle så de ser overblik, men fremhæv deres egne.
                 const isAssignedToActiveKid = day.assignee === activeKid;
                 const isFri = day.assignee === 'Fri / Fælles';
 
                 const div = document.createElement('div');
-                div.className = "p-4 transition hover:bg-slate-50/80 " + (!isAdmin && isAssignedToActiveKid ? "bg-indigo-50/30 border-l-4 border-indigo-500" : "");
+                div.className = "p-5 transition hover:bg-slate-50/80 " + (!isAdmin && isAssignedToActiveKid ? "bg-indigo-50/40 border-l-4 border-indigo-500" : "");
 
                 let assigneeBadgeColor = "bg-slate-100 text-slate-700";
-                if (day.assignee === 'Zander') assigneeBadgeColor = "bg-blue-100 text-blue-800";
-                if (day.assignee === 'Aya') assigneeBadgeColor = "bg-pink-100 text-pink-800";
-                if (day.assignee === 'Fri / Fælles') assigneeBadgeColor = "bg-amber-100 text-amber-800";
+                if (day.assignee === 'Zander') assigneeBadgeColor = "bg-blue-100 text-blue-900 border border-blue-200";
+                if (day.assignee === 'Aya') assigneeBadgeColor = "bg-pink-100 text-pink-900 border border-pink-200";
+                if (day.assignee === 'Fri / Fælles') assigneeBadgeColor = "bg-amber-100 text-amber-900 border border-amber-200";
 
                 let html = `
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-14">
-                                <span class="block font-bold text-slate-900">${day.day}</span>
-                                <span class="text-xs text-slate-400">${day.date}</span>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-20">
+                                <span class="block font-bold text-slate-900 text-base">${day.day}</span>
+                                <span class="text-xs text-slate-400 font-medium">${day.date}</span>
                             </div>
                             <div>
-                                <button ${isAdmin ? `onclick="openAdminDayModal(${day.id})" title="Klik for at ændre person"` : ''} class="px-2.5 py-1 rounded-full text-xs font-bold ${assigneeBadgeColor} ${isAdmin ? 'cursor-pointer hover:opacity-80 ring-1 ring-slate-300' : ''}">
+                                <button ${isAdmin ? `onclick="openAdminDayModal(${day.id})"` : ''} class="px-3 py-1.5 rounded-xl text-xs font-bold ${assigneeBadgeColor} ${isAdmin ? 'cursor-pointer hover:shadow-xs transition ring-2 ring-transparent hover:ring-indigo-300' : ''}">
                                     ${day.assignee} ${isAdmin ? ' ⚙️' : ''}
                                 </button>
                             </div>
@@ -296,16 +294,15 @@
                 `;
 
                 if (!isFri) {
-                    html += `<div class="flex items-center gap-2">`;
+                    html += `<div class="flex items-center gap-2.5 flex-wrap">`;
                     
-                    // Byt knap (vises til børnene på deres egne dage, eller altid i admin)
                     if (isAdmin || (!isAdmin && isAssignedToActiveKid)) {
-                        html += `<button onclick="openSwapModal(${day.id})" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-2.5 py-1.5 rounded-lg font-medium transition">🔄 Byt dag</button>`;
+                        html += `<button onclick="openSwapModal(${day.id})" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl font-semibold transition cursor-pointer">🔄 Byt dag</button>`;
                     }
 
                     if (isAdmin) {
                         html += `
-                            <select onchange="setStatus(${day.id}, this.value, this.value === 'half' ? 30 : 0)" class="text-xs border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select onchange="setStatus(${day.id}, this.value, this.value === 'half' ? 30 : 0)" class="text-xs border border-slate-200 rounded-xl px-3 py-2 bg-white font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer shadow-xs">
                                 <option value="pending" ${day.status === 'pending' ? 'selected' : ''}>⏳ Afventer</option>
                                 <option value="approved" ${day.status === 'approved' && day.penalty === 0 ? 'selected' : ''}>✅ Godkendt (+60 kr)</option>
                                 <option value="half" ${day.status === 'half' || day.penalty === 30 ? 'selected' : ''}>⚠️ Halv løn (-30 kr)</option>
@@ -313,11 +310,10 @@
                             </select>
                         `;
                     } else {
-                        // Børne-visning af status
-                        if (day.status === 'approved') html += `<span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-lg">Godkendt ✅</span>`;
-                        else if (day.status === 'half') html += `<span class="text-xs bg-amber-100 text-amber-800 font-bold px-2.5 py-1 rounded-lg">Halv løn ⚠️</span>`;
-                        else if (day.status === 'missed') html += `<span class="text-xs bg-red-100 text-red-800 font-bold px-2.5 py-1 rounded-lg">Ikke godkendt ❌</span>`;
-                        else html += `<span class="text-xs bg-slate-100 text-slate-600 font-bold px-2.5 py-1 rounded-lg">Afventer ⏳</span>`;
+                        if (day.status === 'approved') html += `<span class="text-xs bg-emerald-100 text-emerald-900 font-bold px-3 py-1.5 rounded-xl border border-emerald-200">Godkendt ✅</span>`;
+                        else if (day.status === 'half') html += `<span class="text-xs bg-amber-100 text-amber-900 font-bold px-3 py-1.5 rounded-xl border border-amber-200">Halv løn ⚠️</span>`;
+                        else if (day.status === 'missed') html += `<span class="text-xs bg-red-100 text-red-900 font-bold px-3 py-1.5 rounded-xl border border-red-200">Ikke godkendt ❌</span>`;
+                        else html += `<span class="text-xs bg-slate-100 text-slate-700 font-bold px-3 py-1.5 rounded-xl border border-slate-200">Afventer ⏳</span>`;
                     }
 
                     html += `</div>`;
@@ -325,13 +321,12 @@
 
                 html += `</div>`;
 
-                // Tjekliste (vises altid, så de kan tjekke af)
                 if (!isFri) {
-                    html += `<div class="mt-3 grid grid-cols-2 sm:grid-cols-5 gap-2 pt-3 border-t border-slate-100/80">`;
+                    html += `<div class="mt-4 grid grid-cols-2 sm:grid-cols-5 gap-2 pt-3 border-t border-slate-100">`;
                     for (const [key, label] of Object.entries(checklistLabels)) {
                         const checked = day.checklist[key];
                         html += `
-                            <label onclick="toggleCheck(${day.id}, '${key}')" class="flex items-center gap-2 p-1.5 rounded-lg cursor-pointer hover:bg-slate-100/60 transition text-xs ${checked ? 'text-emerald-700 font-medium' : 'text-slate-600'}">
+                            <label onclick="toggleCheck(${day.id}, '${key}')" class="flex items-center gap-2 p-2 rounded-xl cursor-pointer hover:bg-slate-100/70 transition text-xs ${checked ? 'text-emerald-800 font-semibold bg-emerald-50/50 border border-emerald-100' : 'text-slate-600 bg-slate-50 border border-slate-200/60'}">
                                 <input type="checkbox" ${checked ? 'checked' : ''} class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4 pointer-events-none">
                                 <span class="select-none leading-tight">${label}</span>
                             </label>
