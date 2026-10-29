@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zander & Aya Køkken & Lommepenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .pulse-active { animation: pulse-subtle 2s infinite; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen pb-24 select-none">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-800/90 border-b border-slate-700 sticky top-0 z-50 backdrop-blur">
+        <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="bg-gradient-to-tr from-amber-500 to-orange-400 p-2 rounded-xl text-slate-950 font-bold shadow-lg">
+                    <i data-lucide="utensils" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-base tracking-tight text-white leading-tight">Køkken & Lommepenge</h1>
+                    <p class="text-xs text-slate-400">Zander & Aya 🍽️</p>
+                </div>
+            </div>
+            
+            <button id="adminToggleBtn" onclick="toggleAdminMode()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition border border-slate-600">
+                <i data-lucide="shield" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span id="adminBtnText">Børne-tilstand</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-md mx-auto px-4 pt-5 space-y-6">
+
+        <!-- Today Banner / Status Card -->
+        <section id="todayCard" class="bg-gradient-to-r from-indigo-900 via-slate-800 to-purple-900 rounded-2xl p-5 border border-indigo-500/30 shadow-xl relative overflow-hidden">
+            <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="flex justify-between items-start mb-3">
+                <span class="bg-indigo-500/20 text-indigo-300 text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-indigo-500/30">I dag: <span id="currentDayName">Mandag</span></span>
+                <span id="currentDateString" class="text-xs text-slate-400 font-medium">Uge 18</span>
+            </div>
+            <div class="space-y-1">
+                <p class="text-xs text-slate-400 uppercase font-semibold">Dagens køkkenansvarlig:</p>
+                <h2 id="todayChefName" class="text-2xl font-extrabold text-white flex items-center gap-2">
+                    <span>Indlæser...</span>
+                </h2>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-700/60 flex justify-between items-center text-xs">
+                <span id="todayStatusText" class="text-amber-400 font-medium flex items-center gap-1">
+                    <i data-lucide="clock" class="w-3.5 h-3.5"></i> Vagt ikke godkendt endnu
+                </span>
+                <button onclick="switchTab('checklist')" class="text-indigo-300 font-bold hover:underline flex items-center gap-1">
+                    Gå til tjekliste <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Kids Quick Switcher (For easy view) -->
+        <div class="grid grid-cols-2 gap-3">
+            <div onclick="selectKid('Zander')" id="cardZander" class="bg-slate-800 border border-slate-700 rounded-xl p-3.5 cursor-pointer transition hover:border-sky-500/50 relative overflow-hidden">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="font-bold text-sky-400 text-base">Zander</span>
+                    <span class="text-xs bg-sky-500/10 text-sky-300 px-2 py-0.5 rounded-md font-medium">12 år</span>
+                </div>
+                <div class="text-xl font-extrabold text-white" id="zanderExpectedPayout">250 kr</div>
+                <p class="text-xs text-slate-400 mt-0.5"><span id="zanderCompletedCount">0</span>/3 vagter udført</p>
+                <div class="w-full bg-slate-700 h-1.5 rounded-full mt-2.5 overflow-hidden">
+                    <div id="zanderProgressBar" class="bg-sky-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div onclick="selectKid('Aya')" id="cardAya" class="bg-slate-800 border border-slate-700 rounded-xl p-3.5 cursor-pointer transition hover:border-pink-500/50 relative overflow-hidden">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="font-bold text-pink-400 text-base">Aya</span>
+                    <span class="text-xs bg-pink-500/10 text-pink-300 px-2 py-0.5 rounded-md font-medium">13 år</span>
+                </div>
+                <div class="text-xl font-extrabold text-white" id="ayaExpectedPayout">250 kr</div>
+                <p class="text-xs text-slate-400 mt-0.5"><span id="ayaCompletedCount">0</span>/3 vagter udført</p>
+                <div class="w-full bg-slate-700 h-1.5 rounded-full mt-2.5 overflow-hidden">
+                    <div id="ayaProgressBar" class="bg-pink-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Contents Container -->
+        <div class="space-y-4">
+
+            <!-- TAB 1: OVERVIEW & SCHEDULE -->
+            <div id="tabOverview" class="tab-content space-y-4">
+                <div class="bg-slate-800 rounded-xl p-4 border border-slate-700">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-sm text-slate-200 flex items-center gap-2">
+                            <i data-lucide="calendar" class="w-4 h-4 text-indigo-400"></i> Ugeplan (Mandag - Lørdag)
+                        </h3>
+                        <span class="text-xs text-slate-400">Søndag = Fri</span>
+                    </div>
+                    <div id="scheduleList" class="space-y-2">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- Quick Rules Reminder -->
+                <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700 text-xs space-y-2 text-slate-300">
+                    <div class="font-bold text-white flex items-center gap-1.5">
+                        <i data-lucide="alert-circle" class="w-4 h-4 text-amber-400"></i> 
+                        Regler for lommepenge
+                    </div>
+                    <p>• Grundbeløb pr. uge: <strong class="text-white">70 kr.</strong></p>
+                    <p>• Pr. gennemført vagt (mad + oprydning kl. 20): <strong class="text-emerald-400">+60 kr.</strong></p>
+                    <p>• Droppet vagt uden aftale: <strong class="text-rose-400">-100 kr.</strong> (0 kr. + 40 kr. træk).</p>
+                    <p>• Halvferdig oprydning: <strong class="text-amber-400">-30 kr.</strong></p>
+                </div>
+            </div>
+
+            <!-- TAB 2: CHECKLIST -->
+            <div id="tabChecklist" class="tab-content space-y-4 hidden">
+                <div class="bg-slate-800 rounded-xl p-4 border border-slate-700">
+                    <div class="flex justify-between items-center mb-3">
+                        <div>
+                            <h3 class="font-bold text-sm text-slate-200 flex items-center gap-2">
+                                <i data-lucide="check-square" class="w-4 h-4 text-emerald-400"></i> Daglig Tjekliste
+                            </h3>
+                            <p class="text-xs text-slate-400">Skal være fuldført og godkendt senest kl. 20.00</p>
+                        </div>
+                        <span id="activeChecklistChef" class="text-xs bg-indigo-500/20 text-indigo-300 font-bold px-2.5 py-1 rounded-lg border border-indigo-500/30">Vælger...</span>
+                    </div>
+
+                    <div id="checklistItems" class="space-y-2.5 mt-4">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <div class="mt-5 pt-3 border-t border-slate-700 flex justify-between items-center">
+                        <span id="checklistProgressText" class="text-xs text-slate-400">0/5 punkter fuldført</span>
+                        <button onclick="saveTodayChecklist()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-lg shadow-emerald-900/30 transition">
+                            <i data-lucide="check" class="w-4 h-4"></i> Gem dagens vagt
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: WALLET & CALCULATOR -->
+            <div id="tabWallet" class="tab-content space-y-4 hidden">
+                <div class="bg-slate-800 rounded-xl p-4 border border-slate-700 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-sm text-slate-200 flex items-center gap-2">
+                            <i data-lucide="wallet" class="w-4 h-4 text-amber-400"></i> Lommepenge Oversigt
+                        </h3>
+                        <div class="flex bg-slate-900 p-1 rounded-lg border border-slate-700 text-xs">
+                            <button onclick="setWalletKid('Zander')" id="walletBtnZander" class="px-3 py-1 rounded-md font-bold transition bg-sky-600 text-white">Zander</button>
+                            <button onclick="setWalletKid('Aya')" id="walletBtnAya" class="px-3 py-1 rounded-md font-medium transition text-slate-400 hover:text-white">Aya</button>
+                        </div>
+                    </div>
+
+                    <!-- Wallet Card Header -->
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-4 rounded-xl border border-slate-700/80 text-center space-y-1">
+                        <span class="text-xs text-slate-400 uppercase tracking-widest font-semibold">Ugens udbetaling i alt</span>
+                        <div id="walletTotalDisplay" class="text-3xl font-extrabold text-emerald-400">250 kr</div>
+                        <p id="walletBreakdownText" class="text-xs text-slate-400">70 kr grundbeløb + 180 kr for 3 vagter</p>
+                    </div>
+
+                    <!-- Shift Log -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-bold text-slate-400 uppercase">Ugens vagtstatus</span>
+                        <div id="walletShiftLogs" class="space-y-2">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: ADMIN / PARENT DASHBOARD -->
+            <div id="tabAdmin" class="tab-content space-y-4 hidden">
+                <div class="bg-slate-800 rounded-xl p-4 border border-amber-500/30 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-sm text-amber-400 flex items-center gap-2">
+                            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i> Forældre / Admin Kontrol
+                        </h3>
+                        <span class="text-xs bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded font-bold border border-amber-500/20">Admin aktiv</span>
+                    </div>
+                    <p class="text-xs text-slate-300">Her kan du godkende vagter direkte, tildele bøder for glemte/halvfærdige opgaver eller nulstille ugen.</p>
+
+                    <div class="space-y-3 pt-2">
+                        <!-- Admin Control per child -->
+                        <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-700 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-sky-400">Zander's vagter denne uge</span>
+                                <button onclick="resetKidShifts('Zander')" class="text-xs text-slate-400 hover:text-white underline">Nulstil</button>
+                            </div>
+                            <div id="adminZanderDays" class="grid grid-cols-3 gap-2">
+                                <!-- Rendered via JS -->
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-700 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-pink-400">Aya's vagter denne uge</span>
+                                <button onclick="resetKidShifts('Aya')" class="text-xs text-slate-400 hover:text-white underline">Nulstil</button>
+                            </div>
+                            <div id="adminAyaDays" class="grid grid-cols-3 gap-2">
+                                <!-- Rendered via JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-700 flex justify-between items-center">
+                        <button onclick="resetEntireWeekData()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-2 rounded-xl text-xs font-bold transition">
+                            Start ny uge (nulstil alle)
+                        </button>
+                        <button onclick="toggleAdminMode()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition">
+                            Lås Admin
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 border-t border-slate-800 backdrop-blur z-40 max-w-md mx-auto">
+        <div class="grid grid-cols-4 py-2 px-2 text-center">
+            <button onclick="switchTab('overview')" id="navOverview" class="flex flex-col items-center justify-center py-1 text-indigo-400 transition">
+                <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                <span class="text-[10px] font-medium mt-1">Oversigt</span>
+            </button>
+            <button onclick="switchTab('checklist')" id="navChecklist" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-slate-200 transition">
+                <i data-lucide="check-square" class="w-5 h-5"></i>
+                <span class="text-[10px] font-medium mt-1">Tjekliste</span>
+            </button>
+            <button onclick="switchTab('wallet')" id="navWallet" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-slate-200 transition">
+                <i data-lucide="wallet" class="w-5 h-5"></i>
+                <span class="text-[10px] font-medium mt-1">Lommepenge</span>
+            </button>
+            <button onclick="switchTab('admin')" id="navAdmin" class="flex flex-col items-center justify-center py-1 text-slate-400 hover:text-slate-200 transition">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+                <span class="text-[10px] font-medium mt-1">Admin</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Custom Modal for Alerts/Info -->
+    <div id="customModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 max-w-xs w-full text-center space-y-4 shadow-2xl">
+            <div id="modalIcon" class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/30">
+                <i data-lucide="check" class="w-6 h-6"></i>
+            </div>
+            <div class="space-y-1">
+                <h3 id="modalTitle" class="font-bold text-white text-base">Besked</h3>
+                <p id="modalMessage" class="text-xs text-slate-300">Handlingen blev udført.</p>
+            </div>
+            <button onclick="closeModal()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition">
+                Forstået
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Days and Schedule Configuration
+        const days = [
+            { id: 'mandag', name: 'Mandag', defaultChef: 'Zander' },
+            { id: 'tirsdag', name: 'Tirsdag', defaultChef: 'Aya' },
+            { id: 'onsdag', name: 'Onsdag', defaultChef: 'Zander' },
+            { id: 'torsdag', name: 'Torsdag', defaultChef: 'Aya' },
+            { id: 'fredag', name: 'Fredag', defaultChef: 'Zander' },
+            { id: 'loerdag', name: 'Lørdag', defaultChef: 'Aya' },
+            { id: 'soendag', name: 'Søndag', defaultChef: 'Fri / Fælles', rest: true }
+        ];
+
+        const checklistTasks = [
+            { id: 'cooking', title: '1. Aftensmad', desc: 'Lave aftensmad efter aftale og rydde løbende op.' },
+            { id: 'leftovers', title: '2. Madrester', desc: 'Rester pakkes i beholdere og sættes på plads i køleskabet.' },
+            { id: 'tables', title: '3. Borde & Flader', desc: 'Spisebord og køkkenborde tømmes helt og tørres af.' },
+            { id: 'dishwasher', title: '4. Opvask & Gryder', desc: 'Tøm/fyld opvaskemaskine. Gryder/pander vaskes i hånden.' },
+            { id: 'stove', title: '5. Komfur & Stænk', desc: 'Komfuret tørres grundigt af for stænk og fedt.' }
+        ];
+
+        // App State
+        let appState = {
+            isAdmin: false,
+            walletSelectedKid: 'Zander',
+            activeChecklistDay: 'mandag',
+            // Structure: { mandag: { chef: 'Zander', status: 'completed', penalty: 0, tasks: {cooking: true, ...} }, ... }
+            scheduleData: {},
+            checklistState: {
+                cooking: false,
+                leftovers: false,
+                tables: false,
+                dishwasher: false,
+                stove: false
+            }
+        };
+
+        // Initialize App on Load
+        window.onload = function() {
+            loadFromStorage();
+            initScheduleDefaults();
+            updateUI();
+            lucide.createIcons();
+        };
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem('zander_aya_kitchen_app');
+            if (saved) {
+                try {
+                    appState = JSON.parse(saved);
+                } catch (e) {
+                    console.error('Could not parse local storage', e);
+                }
+            }
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('zander_aya_kitchen_app', JSON.stringify(appState));
+        }
+
+        function initScheduleDefaults() {
+            days.forEach(day => {
+                if (!appState.scheduleData[day.id]) {
+                    appState.scheduleData[day.id] = {
+                        chef: day.defaultChef,
+                        status: 'pending', // 'pending', 'completed', 'half', 'missed'
+                        penaltyAmount: 0,
+                        tasks: { cooking: false, leftovers: false, tables: false, dishwasher: false, stove: false }
+                    };
+                }
+            });
+            // Set default active day to today or Monday
+            const todayIndex = (new Date().getDay() + 6) % 7; // 0 = Mon, 6 = Sun
+            if (todayIndex < 6) {
+                appState.activeChecklistDay = days[todayIndex].id;
+            } else {
+                appState.activeChecklistDay = 'mandag';
+            }
+        }
+
+        // Tab Navigation
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('nav button').forEach(el => {
+                el.classList.remove('text-indigo-400');
+                el.classList.add('text-slate-400');
+            });
+
+            if (tabId === 'overview') {
+                document.getElementById('tabOverview').classList.remove('hidden');
+                document.getElementById('navOverview').classList.add('text-indigo-400');
+                document.getElementById('navOverview').classList.remove('text-slate-400');
+            } else if (tabId === 'checklist') {
+                document.getElementById('tabChecklist').classList.remove('hidden');
+                document.getElementById('navChecklist').classList.add('text-indigo-400');
+                document.getElementById('navChecklist').classList.remove('text-slate-400');
+                renderChecklistTab();
+            } else if (tabId === 'wallet') {
+                document.getElementById('tabWallet').classList.remove('hidden');
+                document.getElementById('navWallet').classList.add('text-indigo-400');
+                document.getElementById('navWallet').classList.remove('text-slate-400');
+                renderWalletTab();
+            } else if (tabId === 'admin') {
+                document.getElementById('tabAdmin').classList.remove('hidden');
+                document.getElementById('navAdmin').classList.add('text-indigo-400');
+                document.getElementById('navAdmin').classList.remove('text-slate-400');
+                renderAdminTab();
+            }
+            lucide.createIcons();
+        }
+
+        // Toggle Admin Mode
+        function toggleAdminMode() {
+            appState.isAdmin = !appState.isAdmin;
+            const btnText = document.getElementById('adminBtnText');
+            if (appState.isAdmin) {
+                btnText.textContent = "Forældre-tilstand";
+                switchTab('admin');
+            } else {
+                btnText.textContent = "Børne-tilstand";
+                switchTab('overview');
+            }
+            updateUI();
+        }
+
+        // Select Kid Quick View
+        function selectKid(name) {
+            appState.walletSelectedKid = name;
+            switchTab('wallet');
+            renderWalletTab();
+        }
+
+        function setWalletKid(name) {
+            appState.walletSelectedKid = name;
+            const btnZ = document.getElementById('walletBtnZander');
+            const btnA = document.getElementById('walletBtnAya');
+            if (name === 'Zander') {
+                btnZ.className = "px-3 py-1 rounded-md font-bold transition bg-sky-600 text-white";
+                btnA.className = "px-3 py-1 rounded-md font-medium transition text-slate-400 hover:text-white";
+            } else {
+                btnA.className = "px-3 py-1 rounded-md font-bold transition bg-pink-600 text-white";
+                btnZ.className = "px-3 py-1 rounded-md font-medium transition text-slate-400 hover:text-white";
+            }
+            renderWalletTab();
+        }
+
+        // Render All UI Elements
+        function updateUI() {
+            // Header date info
+            const todayIdx = (new Date().getDay() + 6) % 7;
+            const todayObj = days[todayIdx];
+            document.getElementById('currentDayName').textContent = todayObj.name;
+            
+            // Today chef info card
+            const todayData = appState.scheduleData[todayObj.id];
+            const chefNameEl = document.getElementById('todayChefName');
+            const statusTextEl = document.getElementById('todayStatusText');
+
+            if (todayObj.rest) {
+                chefNameEl.innerHTML = `<span class="text-slate-400 font-semibold">Søndag - Fri / Fælles</span>`;
+                statusTextEl.innerHTML = `<i data-lucide="smile" class="w-3.5 h-3.5"></i> Ingen køkkentjans i dag`;
+            } else {
+                const colorClass = todayData.chef === 'Zander' ? 'text-sky-400' : 'text-pink-400';
+                chefNameEl.innerHTML = `<span class="${colorClass}">${todayData.chef}</span> <span class="text-xs font-normal text-slate-300">har køkkenet</span>`;
+                
+                if (todayData.status === 'completed') {
+                    statusTextEl.innerHTML = `<span class="text-emerald-400 font-bold flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Godkendt (+60 kr)</span>`;
+                } else if (todayData.status === 'half') {
+                    statusTextEl.innerHTML = `<span class="text-amber-400 font-bold flex items-center gap-1"><i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> Halv oprydning (-30 kr)</span>`;
+                } else if (todayData.status === 'missed') {
+                    statusTextEl.innerHTML = `<span class="text-rose-400 font-bold flex items-center gap-1"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i> Vagt ikke udført (-100 kr)</span>`;
+                } else {
+                    statusTextEl.innerHTML = `<span class="text-amber-400 font-medium flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Afventer kl. 20.00</span>`;
+                }
+            }
+
+            // Calculate metrics for Zander & Aya
+            updateKidMetrics('Zander');
+            updateKidMetrics('Aya');
+
+            // Render schedule list
+            renderScheduleOverview();
+            lucide.createIcons();
+        }
+
+        function updateKidMetrics(kidName) {
+            let completedCount = 0;
+            let penaltiesTotal = 0;
+
+            days.forEach(d => {
+                if (d.rest) return;
+                const dData = appState.scheduleData[d.id];
+                if (dData.chef === kidName) {
+                    if (dData.status === 'completed') completedCount++;
+                    if (dData.status === 'half') penaltiesTotal += 30;
+                    if (dData.status === 'missed') penaltiesTotal += 100;
+                }
+            });
+
+            // Base 70 + 60 per completed shift minus penalties
+            let totalPayout = 70 + (completedCount * 60) - penaltiesTotal;
+            if (totalPayout < 0) totalPayout = 0;
+
+            if (kidName === 'Zander') {
+                document.getElementById('zanderCompletedCount').textContent = completedCount;
+                document.getElementById('zanderExpectedPayout').textContent = totalPayout + ' kr';
+                document.getElementById('zanderProgressBar').style.width = (completedCount / 3 * 100) + '%';
+            } else {
+                document.getElementById('ayaCompletedCount').textContent = completedCount;
+                document.getElementById('ayaExpectedPayout').textContent = totalPayout + ' kr';
+                document.getElementById('ayaProgressBar').style.width = (completedCount / 3 * 100) + '%';
+            }
+        }
+
+        function renderScheduleOverview() {
+            const container = document.getElementById('scheduleList');
+            container.innerHTML = '';
+
+            days.forEach(d => {
+                const dData = appState.scheduleData[d.id];
+                const isRest = d.rest;
+                
+                let badgeHTML = '';
+                if (isRest) {
+                    badgeHTML = `<span class="text-xs text-slate-400 font-medium bg-slate-900/50 px-2 py-1 rounded">Fri / Fælles</span>`;
+                } else {
+                    const chefColor = dData.chef === 'Zander' ? 'text-sky-400 bg-sky-500/10 border-sky-500/30' : 'text-pink-400 bg-pink-500/10 border-pink-500/30';
+                    let statusBadge = '';
+                    if (dData.status === 'completed') statusBadge = `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-bold">Godkendt ✓</span>`;
+                    else if (dData.status === 'half') statusBadge = `<span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-bold">Halv (-30)</span>`;
+                    else if (dData.status === 'missed') statusBadge = `<span class="text-[10px] bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded font-bold">Misset (-100)</span>`;
+                    else statusBadge = `<span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded">Afventer</span>`;
+
+                    badgeHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-lg border ${chefColor}">${dData.chef}</span>
+                            ${statusBadge}
+                        </div>
+                    `;
+                }
+
+                const row = document.createElement('div');
+                row.className = "flex justify-between items-center py-2.5 px-3 bg-slate-900/60 rounded-xl border border-slate-700/60 text-xs";
+                row.innerHTML = `
+                    <span class="font-semibold text-slate-300 w-20">${d.name}</span>
+                    ${badgeHTML}
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Render Checklist Tab
+        function renderChecklistTab() {
+            const daySelectContainer = document.createElement('div');
+            // We can add a day selector dropdown or buttons for checklist
+            let dayButtonsHTML = '<div class="grid grid-cols-6 gap-1 mb-3 text-xs">';
+            days.forEach(d => {
+                if (d.rest) return;
+                const activeClass = appState.activeChecklistDay === d.id ? 'bg-indigo-600 text-white font-bold' : 'bg-slate-900 text-slate-300 hover:bg-slate-700';
+                dayButtonsHTML += `<button onclick="setActiveChecklistDay('${d.id}')" class="py-1.5 rounded-lg border border-slate-700 transition ${activeClass}">${d.name.substring(0,3)}</button>`;
+            });
+            dayButtonsHTML += '</div>';
+
+            const activeDayData = appState.scheduleData[appState.activeChecklistDay];
+            document.getElementById('activeChecklistChef').textContent = `${activeDayData.chef} (${appState.activeChecklistDay.toUpperCase()})`;
+
+            const itemsContainer = document.getElementById('checklistItems');
+            itemsContainer.innerHTML = dayButtonsHTML;
+
+            checklistTasks.forEach(task => {
+                const isChecked = activeDayData.tasks[task.id] || false;
+                const taskDiv = document.createElement('div');
+                taskDiv.className = `p-3 rounded-xl border transition flex items-start gap-3 cursor-pointer ${isChecked ? 'bg-emerald-950/20 border-emerald-500/40 text-slate-200' : 'bg-slate-900 border-slate-700 text-slate-300'}`;
+                taskDiv.onclick = () => toggleTask(task.id);
+                taskDiv.innerHTML = `
+                    <div class="mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center flex-shrink-0 transition ${isChecked ? 'bg-emerald-500 border-emerald-400 text-slate-950 font-bold' : 'border-slate-600 bg-slate-800'}">
+                        ${isChecked ? '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}
+                    </div>
+                    <div>
+                        <div class="font-bold text-xs ${isChecked ? 'text-emerald-300 line-through' : 'text-white'}">${task.title}</div>
+                        <div class="text-[11px] text-slate-400 mt-0.5">${task.desc}</div>
+                    </div>
+                `;
+                itemsContainer.appendChild(taskDiv);
+            });
+
+            // Update checklist progress count
+            const checkedCount = Object.values(activeDayData.tasks).filter(Boolean).length;
+            document.getElementById('checklistProgressText').textContent = `${checkedCount}/5 punkter fuldført`;
+        }
+
+        function setActiveChecklistDay(dayId) {
+            appState.activeChecklistDay = dayId;
+            renderChecklistTab();
+        }
+
+        function toggleTask(taskId) {
+            const dData = appState.scheduleData[appState.activeChecklistDay];
+            dData.tasks[taskId] = !dData.tasks[taskId];
+            saveToStorage();
+            renderChecklistTab();
+        }
+
+        function saveTodayChecklist() {
+            const dData = appState.scheduleData[appState.activeChecklistDay];
+            const checkedCount = Object.values(dData.tasks).filter(Boolean).length;
+            
+            if (checkedCount === 5) {
+                dData.status = 'completed';
+                showModal("Vagt Godkendt! 🎉", `${dData.chef} har gennemført alle 5 punkter for ${appState.activeChecklistDay} og optjent +60 kr!`);
+            } else if (checkedCount > 0) {
+                dData.status = 'half';
+                showModal("Delvist fuldført ⚠️", `${checkedCount}/5 punkter er tjekket af. Vagten er markeret som halv (-30 kr).`);
+            } else {
+                dData.status = 'pending';
+                showModal("Ingen punkter valgt", "Husk at tjekke punkterne af efterhånden som I gør dem færdige.");
+            }
+            saveToStorage();
+            updateUI();
+        }
+
+        // Render Wallet Tab
+        function renderWalletTab() {
+            const kid = appState.walletSelectedKid;
+            let completedCount = 0;
+            let penaltiesTotal = 0;
+
+            const logsContainer = document.getElementById('walletShiftLogs');
+            logsContainer.innerHTML = '';
+
+            days.forEach(d => {
+                if (d.rest) return;
+                const dData = appState.scheduleData[d.id];
+                if (dData.chef === kid) {
+                    if (dData.status === 'completed') completedCount++;
+                    if (dData.status === 'half') penaltiesTotal += 30;
+                    if (dData.status === 'missed') penaltiesTotal += 100;
+
+                    let statusBadge = '<span class="text-slate-400">Ikke startet</span>';
+                    if (dData.status === 'completed') statusBadge = '<span class="text-emerald-400 font-bold">+60 kr (Godkendt)</span>';
+                    else if (dData.status === 'half') statusBadge = '<span class="text-amber-400 font-bold">Halv løn (-30 kr)</span>';
+                    else if (dData.status === 'missed') statusBadge = '<span class="text-rose-400 font-bold">Udeblevet (-100 kr)</span>';
+
+                    const item = document.createElement('div');
+                    item.className = "flex justify-between items-center py-2 px-3 bg-slate-900 rounded-lg text-xs border border-slate-700/60";
+                    item.innerHTML = `
+                        <span class="font-semibold text-white capitalize">${d.name}</span>
+                        <span>${statusBadge}</span>
+                    `;
+                    logsContainer.appendChild(item);
+                }
+            });
+
+            let total = 70 + (completedCount * 60) - penaltiesTotal;
+            if (total < 0) total = 0;
+
+            document.getElementById('walletTotalDisplay').textContent = total + ' kr';
+            document.getElementById('walletBreakdownText').innerHTML = `70 kr grundbeløb + (${completedCount} × 60 kr) ${penaltiesTotal > 0 ? `- ${penaltiesTotal} kr i bøder` : ''}`;
+        }
+
+        // Render Admin Tab
+        function renderAdminTab() {
+            renderAdminKidDays('Zander', 'adminZanderDays');
+            renderAdminKidDays('Aya', 'adminAyaDays');
+        }
+
+        function renderAdminKidDays(kidName, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            days.forEach(d => {
+                if (d.rest) return;
+                const dData = appState.scheduleData[d.id];
+                if (dData.chef === kidName) {
+                    const btn = document.createElement('button');
+                    let statusColor = 'bg-slate-800 text-slate-300 border-slate-700';
+                    let label = `${d.name.substring(0,3)}: Afventer`;
+
+                    if (dData.status === 'completed') {
+                        statusColor = 'bg-emerald-950/40 text-emerald-300 border-emerald-500/50';
+                        label = `${d.name.substring(0,3)}: OK ✓`;
+                    } else if (dData.status === 'half') {
+                        statusColor = 'bg-amber-950/40 text-amber-300 border-amber-500/50';
+                        label = `${d.name.substring(0,3)}: Halv (-30)`;
+                    } else if (dData.status === 'missed') {
+                        statusColor = 'bg-rose-950/40 text-rose-300 border-rose-500/50';
+                        label = `${d.name.substring(0,3)}: Misset`;
+                    }
+
+                    btn.className = `p-2 rounded-lg text-xs font-bold border transition ${statusColor}`;
+                    btn.textContent = label;
+                    btn.onclick = () => cycleAdminStatus(d.id);
+                    container.appendChild(btn);
+                }
+            });
+        }
+
+        function cycleAdminStatus(dayId) {
+            const dData = appState.scheduleData[dayId];
+            if (dData.status === 'pending') dData.status = 'completed';
+            else if (dData.status === 'completed') dData.status = 'half';
+            else if (dData.status === 'half') dData.status = 'missed';
+            else dData.status = 'pending';
+
+            saveToStorage();
+            updateUI();
+            renderAdminTab();
+        }
+
+        function resetKidShifts(kidName) {
+            days.forEach(d => {
+                if (!d.rest && appState.scheduleData[d.id].chef === kidName) {
+                    appState.scheduleData[d.id].status = 'pending';
+                }
+            });
+            saveToStorage();
+            updateUI();
+            renderAdminTab();
+            showModal("Nulstillet", `Alle vagter for ${kidName} er sat til afventende.`);
+        }
+
+        function resetEntireWeekData() {
+            if (confirm("Vil du starte en helt ny uge og nulstille alle statusser?")) {
+                days.forEach(d => {
+                    if (!d.rest) {
+                        appState.scheduleData[d.id].status = 'pending';
+                        appState.scheduleData[d.id].tasks = { cooking: false, leftovers: false, tables: false, dishwasher: false, stove: false };
+                    }
+                });
+                saveToStorage();
+                updateUI();
+                renderAdminTab();
+                showModal("Ny uge startet!", "Alle ugeplaner og tjeklister er nulstillet.");
+            }
+        }
+
+        // Modal Helpers
+        function showModal(title, message) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('customModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
